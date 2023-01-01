@@ -1,0 +1,6 @@
+5767:C 01 Jan 2023 21:11:25.369 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+5767:C 01 Jan 2023 21:11:25.370 # Redis version=6.2.6, bits=64, commit=00000000, modified=0, pid=5767, just started
+5767:C 01 Jan 2023 21:11:25.370 # Configuration loaded
+5767:M 01 Jan 2023 21:11:25.372 * monotonic clock: POSIX clock_gettime
+5767:M 01 Jan 2023 21:11:25.372 # Warning: Could not create server TCP listening socket 127.0.0.1:6379: bind: Address already in use
+5767:M 01 Jan 2023 21:11:25.372 # Failed listening on port 6379 (TCP), aborting.

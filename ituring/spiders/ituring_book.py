@@ -1,71 +1,3 @@
-# spider_ituring
-爬取ituring.com图书信息，输出到excel。Crawl ituring.com book information and output it to Excel.
-
-##### 项目启动
-```shell
-scrapy crawl ituring_book
-```
-
-##### 需求分析
-爬取 https://www.ituring.com.cn/book 下各图书分类200本图书信息，包含有**书名、作者、价格、阅读量、加入心愿单**数量。
-
-##### 定义item
-包含需要的字段
-```python
-import scrapy
-
-class IturingItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    category = scrapy.Field()  # 分类
-    book_name = scrapy.Field()  # 书名
-    author = scrapy.Field()  # 作者
-    price = scrapy.Field()  # 价格
-    reading = scrapy.Field()  # 阅读量
-    like = scrapy.Field()  # 加入心愿单
-```
-
-##### 管道里接收数据并写入excel
-```python
-def process_item(self, item, spider):
-    # 拿到分类信息
-    category = item["category"]
-    # 切换到对应sheet表
-    sheet = self.book.get_sheet(category)
-    # 查看当前写入了多少数据
-    row = sheet.last_used_row + 1
-    # 最多只获取200本
-    if row <= 200:
-        for i in range(len(self.col_index)):
-            # 写入到excel表中
-            sheet.write(row, i, item[self.col_index[i]])
-    return item
-
-```
-
-##### 中间件随机切换UserAgent
-```python
-# 用户代理
-class USERAGENT(UserAgentMiddleware):
-
-    # 初始化 注意一定是 user_agent=''
-    def __init__(self, user_agent=''):
-        super().__init__(user_agent)
-        self.user_agent = user_agent
-
-    def process_request(self, request, spider):
-        item = random.choice(spider.settings["UAPOOL"])
-        try:
-            print("当前的User-Agent是：" + item)
-            request.headers.setdefault('User-Agent', item)
-        except Exception as e:
-            print(e)
-
-```
-
-
-##### 数据爬取
-```python
 import math
 import scrapy
 import json
@@ -129,8 +61,8 @@ class IturingBookSpider(scrapy.Spider):
     def get_book(self, response):
         """
         将拿到的数据解析到item中，并返回
-        :param response: 
-        :return: 
+        :param response:
+        :return:
         """
         book_data = json.loads(response.text)
         item = IturingItem()
@@ -142,4 +74,3 @@ class IturingBookSpider(scrapy.Spider):
         item["like"] = book_data["favCount"]
         print(f'分类：{item["category"]}, book_name:{item["book_name"]}, author:{item["author"]}, price:{item["price"]}, reading:{item["reading"]}, like:{item["like"]}')
         return item
-```
